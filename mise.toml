@@ -4,7 +4,11 @@ node = "22"
 
 [tasks.install]
 description = "Установить зависимости"
-run = ["npm ci --prefix contract", "npm ci --prefix frontend"]
+run = [
+  "npm ci --prefix contract",
+  "npm ci --prefix frontend",
+  "npm exec --prefix frontend -- playwright install chromium",
+]
 
 [tasks.generate]
 description = "TypeSpec -> openapi.yaml -> SDK фронтенда"
@@ -31,9 +35,19 @@ description = "Компиляция с -Xlint и тесты бэкенда"
 dir = "backend"
 run = "./gradlew --no-daemon test"
 
+[tasks."check:e2e"]
+description = "Браузерный сценарий Playwright против настоящего бэкенда"
+dir = "frontend"
+run = "npm run e2e"
+
 [tasks.check]
 description = "Все проверки. Эту же команду запускает CI"
-depends = ["check:generated", "check:frontend", "check:backend"]
+run = [
+  "mise run check:generated",
+  "mise run check:frontend",
+  "mise run check:backend",
+  "mise run check:e2e",
+]
 
 [tasks.dev-backend]
 description = "Бэкенд на :8080"

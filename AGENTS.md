@@ -4,7 +4,8 @@
 
 ## Команды (нужен mise)
 - `mise run install` зависимости
-- `mise run check` все проверки: актуальность сгенерированного, линтер, типы, тесты. Её же запускает CI
+- `mise run check` все проверки: актуальность сгенерированного, линтер, типы, юнит-, API- и браузерные тесты (Playwright поднимает настоящий бэкенд). Её же запускает CI
+- `mise run check:e2e` только браузерный сценарий (`frontend/e2e/`)
 - `mise run generate` пересобрать `openapi.yaml` и SDK после правки контракта
 - `mise run dev-backend` и `mise run dev-frontend` запуск локально (:8080 и :5173)
 - `mise run build` Docker-образ
