@@ -7,7 +7,6 @@ import app.calendar.domain.CalendarException.Kind;
 import app.calendar.domain.CalendarService;
 import app.calendar.domain.EventType;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,13 +38,12 @@ public class CalendarController {
     if (body.durationMinutes() == null) {
       throw new CalendarException(Kind.VALIDATION_ERROR, "Длительность обязательна");
     }
-    return service.createEventType(body.title(), body.description(), body.durationMinutes());
+    return service.createEventType(body.id(), body.title(), body.description(), body.durationMinutes());
   }
 
   @GetMapping("/event-types/{id}/availability")
   public Availability availability(@PathVariable String id) {
-    UUID uuid = parseUuid(id, Kind.EVENT_TYPE_NOT_FOUND, "Тип встречи не найден");
-    return service.availability(uuid);
+    return service.availability(id);
   }
 
   @GetMapping("/bookings")
@@ -56,15 +54,6 @@ public class CalendarController {
   @PostMapping("/bookings")
   @ResponseStatus(HttpStatus.CREATED)
   public Booking createBooking(@RequestBody CreateBookingRequest body) {
-    UUID typeId = parseUuid(body.eventTypeId(), Kind.VALIDATION_ERROR, "Некорректный eventTypeId");
-    return service.book(typeId, body.start(), body.guestName(), body.guestEmail());
-  }
-
-  private static UUID parseUuid(String raw, Kind kind, String message) {
-    try {
-      return UUID.fromString(raw == null ? "" : raw);
-    } catch (IllegalArgumentException e) {
-      throw new CalendarException(kind, message);
-    }
+    return service.book(body.eventTypeId(), body.start(), body.guestName(), body.guestEmail());
   }
 }

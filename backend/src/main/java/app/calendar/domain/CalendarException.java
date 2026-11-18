@@ -7,6 +7,7 @@ public class CalendarException extends RuntimeException {
 
   public enum Kind {
     VALIDATION_ERROR,
+    EVENT_TYPE_EXISTS,
     EVENT_TYPE_NOT_FOUND,
     SLOT_UNAVAILABLE,
     SLOT_TAKEN

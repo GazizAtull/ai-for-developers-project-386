@@ -32,8 +32,8 @@ class CalendarServiceTest {
   void setUp() {
     service =
         new CalendarService(Clock.fixed(NOW, ZoneOffset.UTC), ScheduleConfig.defaults());
-    short30 = service.createEventType("Знакомство", "", 30);
-    long60 = service.createEventType("Консультация", "Подробный разбор", 60);
+    short30 = service.createEventType("intro", "Знакомство", "", 30);
+    long60 = service.createEventType("consult", "Консультация", "Подробный разбор", 60);
   }
 
   private static Instant at(String date, String time) {
@@ -136,10 +136,10 @@ class CalendarServiceTest {
   void validatesInput() {
     assertEquals(
         Kind.VALIDATION_ERROR,
-        assertThrows(CalendarException.class, () -> service.createEventType(" ", "", 30)).kind());
+        assertThrows(CalendarException.class, () -> service.createEventType("blank", " ", "", 30)).kind());
     assertEquals(
         Kind.VALIDATION_ERROR,
-        assertThrows(CalendarException.class, () -> service.createEventType("X", "", 7)).kind());
+        assertThrows(CalendarException.class, () -> service.createEventType("odd", "X", "", 7)).kind());
     assertEquals(
         Kind.VALIDATION_ERROR,
         assertThrows(
@@ -152,10 +152,24 @@ class CalendarServiceTest {
                 CalendarException.class,
                 () ->
                     service.book(
-                        java.util.UUID.randomUUID(),
+                        "missing",
                         at("2026-11-19", "10:00"),
                         "Аня",
                         "anya@example.com"))
+            .kind());
+  }
+
+  @Test
+  void eventTypeIdIsOwnersSlugAndUnique() {
+    assertEquals("intro", short30.id());
+    assertEquals(
+        Kind.EVENT_TYPE_EXISTS,
+        assertThrows(CalendarException.class, () -> service.createEventType("intro", "X", "", 30))
+            .kind());
+    assertEquals(
+        Kind.VALIDATION_ERROR,
+        assertThrows(
+                CalendarException.class, () -> service.createEventType("Bad Id", "X", "", 30))
             .kind());
   }
 
@@ -171,7 +185,7 @@ class CalendarServiceTest {
         new CalendarService(
             Clock.fixed(Instant.parse("2026-11-19T05:20:00Z"), ZoneOffset.UTC),
             ScheduleConfig.defaults());
-    EventType t = later.createEventType("T", "", 30);
+    EventType t = later.createEventType("t", "T", "", 30);
     later.book(t.id(), at("2026-11-19", "10:30"), "Аня", "anya@example.com");
     assertEquals(1, later.upcomingBookings().size());
   }

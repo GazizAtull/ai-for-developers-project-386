@@ -5,7 +5,7 @@ export type ClientOptions = {
 };
 
 /**
- * Код ошибки: VALIDATION_ERROR, EVENT_TYPE_NOT_FOUND, SLOT_UNAVAILABLE, SLOT_TAKEN.
+ * Код ошибки: VALIDATION_ERROR, EVENT_TYPE_EXISTS, EVENT_TYPE_NOT_FOUND, SLOT_UNAVAILABLE, SLOT_TAKEN.
  */
 export type ApiError = {
     code: string;
@@ -44,6 +44,7 @@ export type CreateBooking = {
 };
 
 export type CreateEventType = {
+    id: string;
     title: string;
     description?: string;
     durationMinutes: number;
@@ -53,6 +54,9 @@ export type CreateEventType = {
  * Тип встречи, который создаёт владелец календаря.
  */
 export type EventType = {
+    /**
+     * Идентификатор, который задаёт владелец: латиница в нижнем регистре, цифры и дефис.
+     */
     id: string;
     title: string;
     description: string;
@@ -155,6 +159,10 @@ export type CreateEventTypeErrors = {
      * The server could not understand the request due to invalid syntax.
      */
     400: ApiError;
+    /**
+     * The request conflicts with the current state of the server.
+     */
+    409: ApiError;
 };
 
 export type CreateEventTypeError = CreateEventTypeErrors[keyof CreateEventTypeErrors];

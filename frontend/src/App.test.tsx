@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { client } from './api/client.gen';
 import App from './App';
 
-const type = { id: '11111111-1111-1111-1111-111111111111', title: 'Знакомство', description: 'Короткий звонок', durationMinutes: 30 };
+const type = { id: 'intro', title: 'Знакомство', description: 'Короткий звонок', durationMinutes: 30 };
 const availability = {
   timezone: 'Asia/Almaty',
   days: [

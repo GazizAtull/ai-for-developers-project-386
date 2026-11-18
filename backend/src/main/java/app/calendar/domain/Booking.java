@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public record Booking(
     UUID id,
-    UUID eventTypeId,
+    String eventTypeId,
     String eventTypeTitle,
     Instant start,
     Instant end,

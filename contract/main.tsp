@@ -10,7 +10,9 @@ namespace CallCalendar;
 
 @doc("Тип встречи, который создаёт владелец календаря.")
 model EventType {
-  @format("uuid") id: string;
+  @doc("Идентификатор, который задаёт владелец: латиница в нижнем регистре, цифры и дефис.")
+  @pattern("^[a-z0-9-]{1,50}$")
+  id: string;
 
   @minLength(1) @maxLength(100) title: string;
 
@@ -23,6 +25,8 @@ model EventType {
 }
 
 model CreateEventType {
+  @pattern("^[a-z0-9-]{1,50}$") id: string;
+
   @minLength(1) @maxLength(100) title: string;
 
   @maxLength(500) description?: string;
@@ -52,7 +56,7 @@ model Availability {
 }
 
 model CreateBooking {
-  @format("uuid") eventTypeId: string;
+  eventTypeId: string;
 
   @doc("Начало слота, один из стартов из ответа /availability.")
   start: utcDateTime;
@@ -64,7 +68,7 @@ model CreateBooking {
 
 model Booking {
   @format("uuid") id: string;
-  @format("uuid") eventTypeId: string;
+  eventTypeId: string;
   eventTypeTitle: string;
   start: utcDateTime;
   end: utcDateTime;
@@ -72,7 +76,7 @@ model Booking {
   guestEmail: string;
 }
 
-@doc("Код ошибки: VALIDATION_ERROR, EVENT_TYPE_NOT_FOUND, SLOT_UNAVAILABLE, SLOT_TAKEN.")
+@doc("Код ошибки: VALIDATION_ERROR, EVENT_TYPE_EXISTS, EVENT_TYPE_NOT_FOUND, SLOT_UNAVAILABLE, SLOT_TAKEN.")
 model ApiError {
   code: string;
   message: string;
@@ -88,6 +92,9 @@ interface EventTypes {
     @body body: EventType;
   } | {
     @statusCode _: 400;
+    @body body: ApiError;
+  } | {
+    @statusCode _: 409;
     @body body: ApiError;
   };
 
