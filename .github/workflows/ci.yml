@@ -18,3 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker build -t call-calendar .
+      - name: container starts on $PORT
+        run: |
+          docker run -d --name app -e PORT=3000 -p 3000:3000 call-calendar
+          for i in $(seq 1 30); do curl -sf http://localhost:3000/api/event-types && break; sleep 2; done
+          curl -sf http://localhost:3000/ | grep -q '<div id="root">'
+          curl -sf http://localhost:3000/api/event-types
