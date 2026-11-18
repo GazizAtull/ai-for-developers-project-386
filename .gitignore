@@ -6,3 +6,5 @@ build/
 backend/src/main/resources/static/
 .idea/
 .DS_Store
+.claude/skills/
+agent/
