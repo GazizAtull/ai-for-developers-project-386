@@ -15,10 +15,12 @@
 - `frontend/` React, Vite, TypeScript. Запросы только через `src/api.ts` поверх сгенерированного SDK
 
 ## Правила
-- Не править `openapi.yaml` и `frontend/src/api` руками: менять `contract/main.tsp` и запускать `mise run generate`
+- Генерируемые пути: `openapi.yaml` и `frontend/src/api/`. Руками не править: менять `contract/main.tsp` и запускать `mise run generate`. CI повторяет генерацию и падает на любых изменениях или новых файлах (`mise run check:generated`)
+- Фронтенд ходит в API только через сгенерированный SDK (`src/api.ts`), без ручного `fetch`
 - Правила расписания (часы, шаг, окно, пояс) живут в `ScheduleConfig` и в `SPEC.md`; менять в обоих местах
 - Проверка пересечений и запись брони только под замком в `CalendarService`
 - Коммиты по Conventional Commits: `feat:`, `fix:`, `docs:`, `test:`, `chore:`
+- Коммит реализации ссылается на тикет, который закрывает: `feat: запись на свободный слот (#12)`
 
 ## Agent skills
 
