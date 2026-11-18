@@ -20,3 +20,6 @@ input, textarea { font: inherit; padding: 8px; border: 1px solid #c5ccd6; border
 .list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .list li { background: #fff; border: 1px solid #dde2ea; border-radius: 10px; padding: 10px; }
 .link { border: none; background: none; color: #2457d6; padding: 0; }
+.home { max-width: 640px; }
+.home-steps { line-height: 1.7; padding-left: 20px; }
+button.primary { background: #2457d6; color: #fff; border-color: #2457d6; padding: 10px 20px; }

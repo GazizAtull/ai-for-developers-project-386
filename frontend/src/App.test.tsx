@@ -45,7 +45,7 @@ describe('App', () => {
       }),
     );
     const user = userEvent.setup();
-    render(<App />);
+    render(<App initialView="guest" />);
 
     await user.click(await screen.findByText('Знакомство'));
     await user.click(await screen.findByRole('button', { name: '10:00' }));
@@ -69,7 +69,7 @@ describe('App', () => {
       }),
     );
     const user = userEvent.setup();
-    render(<App />);
+    render(<App initialView="guest" />);
 
     await user.click(await screen.findByText('Знакомство'));
     await user.click(await screen.findByRole('button', { name: '10:00' }));
