@@ -5,6 +5,7 @@ import { formatDateTime, formatDuration, formatTime } from './format';
 export default function OwnerPage() {
   const [types, setTypes] = useState<EventType[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [id, setId] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState('30');
@@ -38,7 +39,8 @@ export default function OwnerPage() {
     e.preventDefault();
     setError(null);
     try {
-      await api.createEventType({ title, description, durationMinutes: Number(duration) });
+      await api.createEventType({ id, title, description, durationMinutes: Number(duration) });
+      setId('');
       setTitle('');
       setDescription('');
       await reload();
@@ -62,6 +64,10 @@ export default function OwnerPage() {
         </ul>
         <form className="card form" onSubmit={(e) => void create(e)}>
           <h3>Новый тип</h3>
+          <label>
+            Id (латиница, цифры, дефис)
+            <input value={id} onChange={(e) => setId(e.target.value)} pattern="[a-z0-9-]{1,50}" maxLength={50} required />
+          </label>
           <label>
             Название
             <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} required />

@@ -88,6 +88,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       tags:
         - event-types
       requestBody:
@@ -132,7 +138,7 @@ components:
           type: string
         message:
           type: string
-      description: 'Код ошибки: VALIDATION_ERROR, EVENT_TYPE_NOT_FOUND, SLOT_UNAVAILABLE, SLOT_TAKEN.'
+      description: 'Код ошибки: VALIDATION_ERROR, EVENT_TYPE_EXISTS, EVENT_TYPE_NOT_FOUND, SLOT_UNAVAILABLE, SLOT_TAKEN.'
     Availability:
       type: object
       required:
@@ -163,7 +169,6 @@ components:
           format: uuid
         eventTypeId:
           type: string
-          format: uuid
         eventTypeTitle:
           type: string
         start:
@@ -186,7 +191,6 @@ components:
       properties:
         eventTypeId:
           type: string
-          format: uuid
         start:
           type: string
           format: date-time
@@ -201,9 +205,13 @@ components:
     CreateEventType:
       type: object
       required:
+        - id
         - title
         - durationMinutes
       properties:
+        id:
+          type: string
+          pattern: ^[a-z0-9-]{1,50}$
         title:
           type: string
           minLength: 1
@@ -226,7 +234,8 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          pattern: ^[a-z0-9-]{1,50}$
+          description: 'Идентификатор, который задаёт владелец: латиница в нижнем регистре, цифры и дефис.'
         title:
           type: string
           minLength: 1

@@ -16,7 +16,7 @@ public class ApiExceptionHandler {
         switch (e.kind()) {
           case VALIDATION_ERROR, SLOT_UNAVAILABLE -> HttpStatus.BAD_REQUEST;
           case EVENT_TYPE_NOT_FOUND -> HttpStatus.NOT_FOUND;
-          case SLOT_TAKEN -> HttpStatus.CONFLICT;
+          case EVENT_TYPE_EXISTS, SLOT_TAKEN -> HttpStatus.CONFLICT;
         };
     return ResponseEntity.status(status).body(new ApiError(e.kind().name(), e.getMessage()));
   }

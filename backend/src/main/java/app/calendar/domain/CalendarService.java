@@ -23,12 +23,13 @@ import java.util.regex.Pattern;
  */
 public class CalendarService {
 
+  private static final Pattern TYPE_ID = Pattern.compile("^[a-z0-9-]{1,50}$");
   private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
   private final Object lock = new Object();
   private final Clock clock;
   private final ScheduleConfig config;
-  private final Map<UUID, EventType> eventTypes = new LinkedHashMap<>();
+  private final Map<String, EventType> eventTypes = new LinkedHashMap<>();
   private final List<Booking> bookings = new ArrayList<>();
 
   public CalendarService(Clock clock, ScheduleConfig config) {
@@ -42,7 +43,11 @@ public class CalendarService {
     }
   }
 
-  public EventType createEventType(String title, String description, int durationMinutes) {
+  public EventType createEventType(
+      String id, String title, String description, int durationMinutes) {
+    if (id == null || !TYPE_ID.matcher(id).matches()) {
+      throw invalid("id: латиница в нижнем регистре, цифры и дефис, до 50 символов");
+    }
     String cleanTitle = title == null ? "" : title.strip();
     String cleanDescription = description == null ? "" : description.strip();
     if (cleanTitle.isEmpty() || cleanTitle.length() > 100) {
@@ -54,14 +59,17 @@ public class CalendarService {
     if (durationMinutes < 5 || durationMinutes > 240 || durationMinutes % 5 != 0) {
       throw invalid("Длительность от 5 до 240 минут, кратна 5");
     }
-    EventType type = new EventType(UUID.randomUUID(), cleanTitle, cleanDescription, durationMinutes);
+    EventType type = new EventType(id, cleanTitle, cleanDescription, durationMinutes);
     synchronized (lock) {
+      if (eventTypes.containsKey(id)) {
+        throw new CalendarException(Kind.EVENT_TYPE_EXISTS, "Тип встречи с таким id уже есть");
+      }
       eventTypes.put(type.id(), type);
     }
     return type;
   }
 
-  public Availability availability(UUID eventTypeId) {
+  public Availability availability(String eventTypeId) {
     synchronized (lock) {
       EventType type = requireType(eventTypeId);
       Instant now = clock.instant();
@@ -81,7 +89,7 @@ public class CalendarService {
     }
   }
 
-  public Booking book(UUID eventTypeId, Instant start, String guestName, String guestEmail) {
+  public Booking book(String eventTypeId, Instant start, String guestName, String guestEmail) {
     String name = guestName == null ? "" : guestName.strip();
     String email = guestEmail == null ? "" : guestEmail.strip();
     if (start == null) {
@@ -164,7 +172,7 @@ public class CalendarService {
     return false;
   }
 
-  private EventType requireType(UUID id) {
+  private EventType requireType(String id) {
     EventType type = id == null ? null : eventTypes.get(id);
     if (type == null) {
       throw new CalendarException(Kind.EVENT_TYPE_NOT_FOUND, "Тип встречи не найден");
