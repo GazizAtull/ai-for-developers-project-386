@@ -19,3 +19,19 @@
 - Правила расписания (часы, шаг, окно, пояс) живут в `ScheduleConfig` и в `SPEC.md`; менять в обоих местах
 - Проверка пересечений и запись брони только под замком в `CalendarService`
 - Коммиты по Conventional Commits: `feat:`, `fix:`, `docs:`, `test:`, `chore:`
+
+## Agent skills
+
+Набор mattpocock/skills лежит в `.agents/skills/`, версии в `skills-lock.json`. Восстановить и подключить к агенту: `npx skills experimental_install`.
+
+### Issue tracker
+
+Задачи, спецификации и тикеты живут в GitHub Issues репозитория GazizAtull/ai-for-developers-project-386. См. `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Метки по умолчанию: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. См. `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Один контекст: словарь в `GLOSSARY.md`, решения в `docs/adr/`. См. `docs/agents/domain.md`.
