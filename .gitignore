@@ -8,3 +8,5 @@ backend/src/main/resources/static/
 .DS_Store
 .claude/skills/
 agent/
+.env
+.env.*
